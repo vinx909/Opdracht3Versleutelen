@@ -74,7 +74,7 @@
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(75, 35);
             this.buttonSave.TabIndex = 4;
-            this.buttonSave.Text = "save to destop";
+            this.buttonSave.Text = "save to file";
             this.buttonSave.UseVisualStyleBackColor = true;
             this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
             // 

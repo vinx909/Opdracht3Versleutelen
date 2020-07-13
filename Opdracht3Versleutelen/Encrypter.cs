@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -56,8 +57,8 @@ namespace Opdracht3Versleutelen
         {
             InitializeSymmetricAlgorithm();
 
-            Byte[] toEncrypBytes = Encoding.UTF8.GetBytes(toEncrypt);
-            Byte[] keyBytes = Encoding.UTF8.GetBytes(key);
+            byte[] toEncryptBytes = String8ToByte(toEncrypt);
+            byte[] keyBytes = String8ToByte(key);
 
             symmetricAlgorithm.Key = keyBytes;
             symmetricAlgorithm.Mode = cipherMode;
@@ -66,20 +67,20 @@ namespace Opdracht3Versleutelen
             System.IO.MemoryStream memoryStream = new System.IO.MemoryStream();
             CryptoStream cryptoStream = new CryptoStream(memoryStream, symmetricAlgorithm.CreateEncryptor(), CryptoStreamMode.Write);
 
-            cryptoStream.Write(toEncrypBytes, 0, toEncrypBytes.Length);
+            cryptoStream.Write(toEncryptBytes, 0, toEncryptBytes.Length);
             cryptoStream.Close();
 
-            Byte[] encryptedBytes = memoryStream.ToArray();
+            byte[] encryptedBytes = memoryStream.ToArray();
             memoryStream.Close();
 
-            return Encoding.UTF8.GetString(encryptedBytes);
+            return ByteToString64(encryptedBytes);
         }
         public static string DecryptString(string toDecrypt, string key, CipherMode cipherMode, PaddingMode paddingMode)
         {
             InitializeSymmetricAlgorithm();
 
-            Byte[] toEncrypBytes = Encoding.UTF8.GetBytes(toDecrypt);
-            Byte[] keyBytes = Encoding.UTF8.GetBytes(key);
+            byte[] toEncrypBytes = String64ToByte(toDecrypt);
+            byte[] keyBytes = String8ToByte(key);
 
             symmetricAlgorithm.Key = keyBytes;
             symmetricAlgorithm.Mode = cipherMode;
@@ -91,10 +92,10 @@ namespace Opdracht3Versleutelen
             cryptoStream.Write(toEncrypBytes, 0, toEncrypBytes.Length);
             cryptoStream.Close();
 
-            Byte[] decryptedBytes = memoryStream.ToArray();
+            byte[] decryptedBytes = memoryStream.ToArray();
             memoryStream.Close();
 
-            return Encoding.UTF8.GetString(decryptedBytes);
+            return ByteToString8(decryptedBytes);
         }
 
         internal static string EncryptString(string toEncrypt, string key, object cipherMode, object paddingMode)
@@ -113,6 +114,22 @@ namespace Opdracht3Versleutelen
             }
             return null;
         }
-        
+
+        private static string ByteToString8(byte[] bytes)
+        {
+            return UTF8Encoding.UTF8.GetString(bytes);
+        }
+        private static byte[] String8ToByte(string toTransformString)
+        {
+            return UTF8Encoding.UTF8.GetBytes(toTransformString);
+        }
+        private static string ByteToString64(byte[] bytes)
+        {
+            return Convert.ToBase64String(bytes);
+        }
+        private static byte[] String64ToByte(string toTransformString)
+        {
+            return Convert.FromBase64String(toTransformString);
+        }
     }
 }

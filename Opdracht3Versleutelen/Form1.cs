@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,10 @@ namespace Opdracht3Versleutelen
 {
     public partial class Form1 : Form
     {
-        
+        private const string filePath = @"../../../../files/Opdracht3VersleutelenFile.txt";
+        private ToFileWriter toFileWriter;
+
+
         private void SetupListBoxCipherMode()
         {
             listBoxCipherMode.Items.Clear();
@@ -41,10 +45,12 @@ namespace Opdracht3Versleutelen
         public Form1()
         {
             InitializeComponent();
+
             SetupListBoxCipherMode();
             SetupListBoxPaddingMode();
             SetupInitialKey();
             label4.Text = "";
+            toFileWriter = new ToFileWriter(filePath);
         }
 
         private Object GetListBoxMode(Object selectedItem, Action<Action<Object>> targetFunction)
@@ -111,7 +117,7 @@ namespace Opdracht3Versleutelen
             {
                 object cipherMode = GetListBoxCipherModeMode();
                 object paddingMode = GetListBoxPaddingModeMode();
-                string decrypted = Encrypter.DecryptString(Encrypter.EncryptString(richTextBoxUnedited.Text, textBoxKey.Text, cipherMode, paddingMode),textBoxKey.Text,cipherMode,paddingMode);
+                string decrypted = Encrypter.DecryptString(richTextBoxUnedited.Text,textBoxKey.Text,cipherMode,paddingMode);
                 SetRichTextBoxEditedText(decrypted);
             }
             catch (Exception exception)
@@ -122,7 +128,7 @@ namespace Opdracht3Versleutelen
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
-
+            toFileWriter.StringToFile(richTextBoxEdited.Text);
         }
     }
 }
